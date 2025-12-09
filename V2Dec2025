@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Avant/Après Slider</title>
+<style>
+  :root { --pos: 50%; --handle-size: 44px; }
+
+  .ba-slider {
+    position: relative;
+    aspect-ratio: 600/431;
+    max-width: 700;
+    margin: 2rem auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    background: #f1f5f9;
+  }
+
+  .ba-slider img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .ba-after-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .ba-before-wrapper {
+    position: absolute;
+    inset: 0;
+    width: var(--pos);
+    overflow: hidden;
+    z-index: 2;
+  }
+
+  .ba-divider {
+    position: absolute;
+    top: 0;
+    left: var(--pos);
+    transform: translateX(-50%);
+    width: 5px;
+    height: 100%;
+    background: rgba(255,255,255,.9);
+    box-shadow: 0 0 0 1px rgba(0,0,0,.16) inset;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .ba-handle {
+    position: absolute;
+    top: 50%;
+    left: var(--pos);
+    transform: translate(-50%, -50%);
+    width: var(--handle-size);
+    height: var(--handle-size);
+    border-radius: 999px;
+    background: #fff;
+    border: 1x solid rgba(0,0,0,.08);
+    box-shadow: 0 4px 16px rgba(0,0,0,.2);
+    display: grid;
+    place-items: center;
+    z-index: 4;
+    pointer-events: none;
+  }
+
+  .ba-handle::before,
+  .ba-handle::after {
+    content: "";
+    display: block;
+    width: 8px;
+    height: 18px;
+    border-left: 2px solid #0003;
+    border-right: 2px solid #0003;
+  }
+
+  .ba-range {
+    position: absolute;
+    inset: 0;
+    appearance: none;
+    background: none;
+    outline: none;
+    cursor: ew-resize;
+    z-index: 5;
+  }
+
+  .ba-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: var(--handle-size);
+    height: 100%;
+    background: transparent;
+    cursor: ew-resize;
+  }
+
+  .ba-range::-moz-range-thumb {
+    width: var(--handle-size);
+    height: var(--handle-size);
+    background: transparent;
+    border: none;
+  }
+
+  .ba-badge {
+    position: absolute;
+    top: 10px;
+    padding: 6px 10px;
+    font: 600 12px/1 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    color: #0f172a;
+    background: rgba(255,255,255,.9);
+    border-radius: 999px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    z-index: 6;
+    user-select: none;
+  }
+
+  .ba-badge--before { left: 10px; }
+  .ba-badge--after { right: 10px; }
+
+  @media (max-width: 640px) {
+    :root { --handle-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<figure class="ba-slider" data-label-before="Before" data-label-after="After">
+  <div class="ba-after-wrapper">
+    <img src="https://www.natalieproject.eu/sites/default/files/2025-12/20250519_NATALIE_DS6_EPTBV_WorksSite1_DebutVidange%20%28158%29.jpg" alt="Après">
+  </div>
+  <div class="ba-before-wrapper">
+    <img src="https://www.natalieproject.eu/sites/default/files/2025-12/20250515_NATALIE_DS6_EPTBV_Works_Site1%20%2827%29.jpg" alt="Avant">
+  </div>
+  <div class="ba-divider"></div>
+  <div class="ba-handle" title="Glisser pour comparer"></div>
+  <input class="ba-range" type="range" min="0" max="100" value="50" aria-label="Position du comparateur avant/après" />
+  <span class="ba-badge ba-badge--before"></span>
+  <span class="ba-badge ba-badge--after"></span>
+</figure>
+
+<script>
+  const slider = document.querySelector('.ba-slider');
+  const range = slider.querySelector('.ba-range');
+  const beforeBadge = slider.querySelector('.ba-badge--before');
+  const afterBadge = slider.querySelector('.ba-badge--after');
+
+  beforeBadge.textContent = slider.dataset.labelBefore || 'Before';
+  afterBadge.textContent  = slider.dataset.labelAfter  || 'After';
+
+  function setPos(value) {
+    const pos = Math.max(0, Math.min(100, value)) + '%';
+    slider.style.setProperty('--pos', pos);
+  }
+
+  range.addEventListener('input', e => setPos(e.target.value));
+  setPos(range.value);
+</script>
+
+</body>
+</html>
